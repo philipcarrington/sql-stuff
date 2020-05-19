@@ -50,7 +50,7 @@ from information_schema.tables ist
                        ) as call_out_field_message
                     from information_schema.columns isc
                     where isc.column_key = 'PRI'
-                    and isc.table_schema = 'cloud-permissions'
+                    and isc.table_schema = '<REPLACE WITH YOUR DB NAME>'
                ) primary_key_cols
         on ist.table_name = primary_key_cols.primary_table_name
             and ist.table_schema = primary_key_cols.primary_schema_name
@@ -87,7 +87,7 @@ from information_schema.tables ist
                         on klu.table_schema = isc.table_schema
                             and klu.table_name = isc.table_name
                             and klu.column_name = isc.column_name
-                where klu.table_schema = 'cloud-permissions'
+                where klu.table_schema = '<REPLACE WITH YOUR DB NAME>'
                     and klu.constraint_name like 'uix%'
                 group by klu.table_schema,
                        klu.table_name
@@ -95,5 +95,5 @@ from information_schema.tables ist
         on ist.table_schema = unq_key_cols.table_schema
             and ist.table_name = unq_key_cols.table_name
 where ist.table_type = 'BASE TABLE'
-    and ist.TABLE_SCHEMA = 'cloud-permissions'
+    and ist.TABLE_SCHEMA = '<REPLACE WITH YOUR DB NAME>'
 go

@@ -35,7 +35,7 @@ from (
                concat('\t out_', isc.column_name, ' ', isc.data_type) as out_sig_field,
                concat('out_', isc.column_name) as out_param
         from information_schema.columns isc
-        where isc.table_schema = 'permissions_meta'
+        where isc.table_schema = '<REPLACE WITH YOUR DB NAME>'
             and isc.column_key = 'PRI'
      ) as primary_keys
     inner join
@@ -62,7 +62,7 @@ from (
                             separator', \n'
                            )as insert_param_fields
         from information_schema.columns isc
-        where isc.table_schema = 'permissions_meta'
+        where isc.table_schema = '<REPLACE WITH YOUR DB NAME>'
             and isc.column_key <> 'PRI'
         group by isc.table_schema,
                isc.table_name
@@ -81,7 +81,7 @@ from (
                         on klu.table_schema = isc.table_schema
                             and klu.table_name = isc.table_name
                             and klu.column_name = isc.column_name
-                where klu.table_schema = 'permissions_meta'
+                where klu.table_schema = '<REPLACE WITH YOUR DB NAME>'
                     and klu.constraint_name like 'uix%'
                 group by klu.table_schema,
                        klu.table_name
