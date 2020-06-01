@@ -17,7 +17,7 @@ create view permissions_meta.db_gen_table_columns as (
             from
                 (
                     select kcu.table_schema,
-                           kcu.table_name                                          
+                           kcu.table_name                                                       
                     from information_schema.key_column_usage kcu
                     where kcu.constraint_schema = 'permissions_meta'
                         and ((kcu.constraint_name like 'fk_%') or (kcu.constraint_name like 'REL%'))
@@ -38,11 +38,10 @@ create view permissions_meta.db_gen_table_columns as (
 go
 select forign_key_data.table_schema,
        forign_key_data.table_name,
-       concat('drop view ', forign_key_data.schema_for_the_views, '.', forign_key_data.table_name, '_denormalised \n', forign_key_data.statement_sep, '\n') as drop_view,
+       concat('drop view ', forign_key_data.schema_for_the_views, '.', forign_key_data.table_name, '_', forign_key_data.suffix_for_view, ' \n', forign_key_data.statement_sep, '\n') as drop_view,
        concat(
             -- Create View:
-            'create view ', forign_key_data.schema_for_the_views, '.', forign_key_data.table_name, '_denormalised as ( \n'
-            -- Selects:
+            'create view ', forign_key_data.schema_for_the_views, '.', forign_key_data.table_name, '_', forign_key_data.suffix_for_view, ' as ( \n'
             'select \n ',
                     orig_pmtc.alias_column, ', \n ',
                     group_concat(
@@ -57,7 +56,7 @@ select forign_key_data.table_schema,
                             separator ' \n '
                         ),
             -- End Create:
-            '\n )',
+            '\n ) \n',
             forign_key_data.statement_sep, '\n'
        ) as create_view                
 from 
@@ -73,6 +72,7 @@ from
                base.parent_table_alias,
                concat(base.parent_table_alias, '.', base.referenced_column_name) as parent_join_column,                       
                'permissions_meta' as schema_for_the_views,
+               'denorm' as suffix_for_view,
                'go' as statement_sep
         from 
             (
@@ -101,7 +101,4 @@ group by forign_key_data.table_schema,
        orig_pmtc.alias_column,
        forign_key_data.child_table_alias,
        forign_key_data.child_table      
-              
-          
-            
-        
+         
