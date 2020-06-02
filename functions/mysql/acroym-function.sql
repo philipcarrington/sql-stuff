@@ -43,5 +43,5 @@ begin
     return result;
 end
 go
-select acronym('come_Again_That_Cant_Help!')
+select acronym('table_in_your_database')
 go
